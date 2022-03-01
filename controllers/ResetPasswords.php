@@ -2,13 +2,13 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-require_once '../models/ResetPassword.php';
-require_once '../helpers/session_helper.php';
-require_once '../models/User.php';
+require_once 'models/ResetPassword.php';
+require_once 'helpers/session_helper.php';
+require_once 'models/User.php';
 //Require PHP Mailer
-require_once '../PHPMailer/src/PHPMailer.php';
-require_once '../PHPMailer/src/Exception.php';
-require_once '../PHPMailer/src/SMTP.php';
+require_once 'PHPMailer/src/PHPMailer.php';
+require_once 'PHPMailer/src/Exception.php';
+require_once 'PHPMailer/src/SMTP.php';
 
 class ResetPasswords
 {
@@ -23,11 +23,13 @@ class ResetPasswords
         //Setup PHPMailer
         $this->mail = new PHPMailer();
         $this->mail->isSMTP();
-        $this->mail->Host = 'smtp.mailtrap.io';
+        $this->mail->SMTPDebug = 1;
         $this->mail->SMTPAuth = true;
-        $this->mail->Port = 2525;
-        $this->mail->Username = 'cbef7d9627323b';
-        $this->mail->Password = '3fec6e3ccb3c4a';
+        $this->mail->SMTPSecure = 'tls';
+        $this->mail->Host = 'smtp.gmail.com';
+        $this->mail->Port = 587;
+        $this->mail->Username = 'marion.raudsepp@gmail.com';
+        $this->mail->Password = 'vvsgcrcpnzxyrcyj';
     }
 
     public function sendEmail()
@@ -37,28 +39,28 @@ class ResetPasswords
         $usersEmail = trim($_POST['usersEmail']);
 
         if (empty($usersEmail)) {
-            flash("reset", "Please input email");
-            redirect("../reset-password.php");
+            flash("reset", "Palun lisa e-posti aadress");
+            redirect("../reset-password");
         }
 
         if (!filter_var($usersEmail, FILTER_VALIDATE_EMAIL)) {
-            flash("reset", "Invalid email");
-            redirect("../reset-password.php");
+            flash("reset", "Vale e-posti aadress");
+            redirect("../reset-password");
         }
         //Will be used to query the user from the database
         $selector = bin2hex(random_bytes(8));
         //Will be used for confirmation once the database entry has been matched
         $token = random_bytes(32);
         //URL will vary depending on where the website is being hosted from
-        $url = 'https://marion.kehtnakhk.ee/tak20_login/create-new-password.php?selector=' . $selector . '&validator=' . bin2hex($token);
+        $url = 'https://marion.kehtnakhk.ee/tak20_login_edit/create-new-password.php?selector=' . $selector . '&validator=' . bin2hex($token);
         //Expiration date will last for half an hour
         $expires = date("U") + 1800;
         if (!$this->resetModel->deleteEmail($usersEmail)) {
-            die("There was an error");
+            die("Ilmnes viga");
         }
         $hashedToken = password_hash($token, PASSWORD_DEFAULT);
         if (!$this->resetModel->insertToken($usersEmail, $selector, $hashedToken, $expires)) {
-            die("There was an error");
+            die("Ilmnes viga");
         }
         //Can Send Email Now
         $subject = "Reset your password";
@@ -66,7 +68,7 @@ class ResetPasswords
         $message .= "<p>Here is your password reset link: </p>";
         $message .= "<a href='" . $url . "'>" . $url . "</a>";
 
-        $this->mail->setFrom('TheBoss@gmail.com');
+        $this->mail->setFrom('raudmari@gmail.com', 'Login_Edit_Admin');
         $this->mail->isHTML(true);
         $this->mail->Subject = $subject;
         $this->mail->Body = $message;
@@ -75,7 +77,7 @@ class ResetPasswords
         $this->mail->send();
 
         flash("reset", "Check your email", 'form-message form-message-green');
-        redirect("../reset-password.php");
+        redirect("../reset-password");
     }
 
     public function resetPassword()
@@ -148,8 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $init->resetPassword();
             break;
         default:
-            header("location: ../index.php");
+            header("location: ../avaleht");
     }
 } else {
-    header("location: ../index.php");
+    header("location: ../avaleht");
 }

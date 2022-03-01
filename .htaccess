@@ -1,0 +1,37 @@
+Options +FollowSymLinks
+
+# Ei näita kausta sisu
+Options -Indexes -MultiViews
+
+RewriteEngine On
+
+# See on projekti kaust
+RewriteBase /tak20_login_edit/
+ 
+# Fail mis käitub teisiti ja ei lähe läbi index.php
+RewriteCond %{REQUEST_URI} "../controllers/AllowRewriting.php"
+RewriteRule (.*) $1 [L]
+
+RewriteCond %{REQUEST_URI} "../controllers/RateBooks.php"
+RewriteRule (.*) $1 [L]
+
+RewriteCond %{REQUEST_URI} "setBookValue.php"
+RewriteRule (.*) $1 [L] 
+
+RewriteCond %{REQUEST_URI} "setMouthValue.php"
+RewriteRule (.*) $1 [L] 
+
+RewriteCond %{REQUEST_URI} "../Users.php"
+RewriteRule (.*) $1 [L] 
+
+# Kaust, mis käitub teisiti
+#RewriteCond %{REQUEST_URI} "kcfinder312/(.*)"
+#RewriteRule (.*) $1 [L]
+
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+RewriteRule ^(.*)$ index.php/$1 [L]
+RewriteRule ^(.+)\.(php) index.php?%{QUERY_STRING} [L]

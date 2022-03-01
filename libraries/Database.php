@@ -1,4 +1,5 @@
 <?php
+require_once '/home/marionraudsepp/public_html/tak20_login_edit/config/config.php';
 /*
     * PDO Database Class
     * Connect to database
@@ -8,10 +9,10 @@
 */
 class Database
 {
-    private $host = 'localhost';
-    private $user = '';
-    private $pass = '';
-    private $dbname = 'marionraudsepp_login_system';
+    private $host = HOST;
+    private $user = USERNAME;
+    private $pass = PASSWORD;
+    private $dbname = DBNAME;
 
     //Will be the PDO object
     private $dbh; // database handler
@@ -77,6 +78,12 @@ class Database
         return $this->stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public function resultSetASS()
+    {
+        $this->execute();
+        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     //Return a single record
     public function single()
     {
@@ -88,5 +95,11 @@ class Database
     public function rowCount()
     {
         return $this->stmt->rowCount();
+    }
+
+    public function singleone()
+    {
+        $this->execute();
+        return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
