@@ -1,9 +1,9 @@
 <?php
 # Andmebaasi ühendus
-define('HOST', 'localhost');
-define('USERNAME', 'marionraudsepp'); # Andmebaasi kasutajanimi
-define('PASSWORD', 'Parool123'); # Andmebaasi parool
-define('DBNAME', 'marionraudsepp_login_system'); # Andmebaasi nimi (serveris variandis käib ette kasutajanimi_)
+define('HOST', '');
+define('USERNAME', ''); # Andmebaasi kasutajanimi
+define('PASSWORD', ''); # Andmebaasi parool
+define('DBNAME', ''); # Andmebaasi nimi (serveris variandis käib ette kasutajanimi_)
 
 /** Seaded */
 define('MAXPERPAGE', 10);           // Mitu kirjet on vaikimisi lehel
