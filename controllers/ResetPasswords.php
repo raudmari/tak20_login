@@ -26,10 +26,10 @@ class ResetPasswords
         $this->mail->SMTPDebug = 1;
         $this->mail->SMTPAuth = true;
         $this->mail->SMTPSecure = 'tls';
-        $this->mail->Host = 'smtp.gmail.com';
+        $this->mail->Host = '';
         $this->mail->Port = 587;
-        $this->mail->Username = 'marion.raudsepp@gmail.com';
-        $this->mail->Password = 'vvsgcrcpnzxyrcyj';
+        $this->mail->Username = '';
+        $this->mail->Password = '';
     }
 
     public function sendEmail()
@@ -68,7 +68,7 @@ class ResetPasswords
         $message .= "<p>Here is your password reset link: </p>";
         $message .= "<a href='" . $url . "'>" . $url . "</a>";
 
-        $this->mail->setFrom('raudmari@gmail.com', 'Login_Edit_Admin');
+        $this->mail->setFrom('', 'Login_Edit_Admin');
         $this->mail->isHTML(true);
         $this->mail->Subject = $subject;
         $this->mail->Body = $message;
