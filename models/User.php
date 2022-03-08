@@ -1,6 +1,6 @@
 <?php
-
-require_once '../libraries/Database.php';
+define('ROOT', dirname(dirname(__FILE__)));
+require_once(ROOT . '/libraries/Database.php');
 
 class User
 {
@@ -32,8 +32,7 @@ class User
     //Register User
     public function register($data)
     {
-        $this->db->query('INSERT INTO users (usersName, usersEmail, usersUid, usersPwd) 
-        VALUES (:name, :email, :Uid, :password)');
+        $this->db->query('INSERT INTO users (usersName, usersEmail, usersUid, usersPwd) VALUES (:name, :email, :Uid, :password)');
         //Bind values
         $this->db->bind(':name', $data['usersName']);
         $this->db->bind(':email', $data['usersEmail']);

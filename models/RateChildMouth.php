@@ -15,7 +15,7 @@ class RateChildMouth
         $this->db->query('SELECT cm_id FROM rating WHERE username = :username OR username = :email GROUP BY cm_id');
         $this->db->bind(':username', $username);
         $this->db->bind(':username', $email);
-        $userRcm = $this->db->resultSetASS();
+        $userRcm = $this->db->resultSet();
         if ($userRcm) {
             return $userRcm;
         } else {
@@ -32,9 +32,22 @@ class RateChildMouth
         ON cm.id = r.cm_id 
         GROUP BY cm.id
         ORDER BY RAND()');
-        $results = $this->db->resultSetASS();
+        $results = $this->db->resultSet();
         if ($results) {
             return $results;
+        } else {
+            return false;
+        }
+    }
+
+    public function setChildValue($data)
+    {
+        $this->db->query('INSERT INTO rating (cm_id, rating_number, username) VALUES (:id, :rating, :username)');
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':rating', $data['rating']);
+        $this->db->bind(':username', $data['username']);
+        if ($this->db->execute()) {
+            return true;
         } else {
             return false;
         }

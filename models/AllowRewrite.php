@@ -1,5 +1,5 @@
 <?php
-require_once '/home/marionraudsepp/public_html/tak20_login_edit/libraries/Database.php';
+require_once 'libraries/Database.php';
 
 
 class AllowRewrite
@@ -14,7 +14,7 @@ class AllowRewrite
     public function rewriteAllowed()
     {
         $this->db->query('SELECT * FROM settings ORDER BY id LIMIT 1');
-        $row = $this->db->singleone();
+        $row = $this->db->single();
         if ($row) {
             return $row;
         } else {

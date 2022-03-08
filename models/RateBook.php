@@ -1,4 +1,5 @@
 <?php
+
 require_once 'libraries/Database.php';
 
 class RateBook
@@ -15,7 +16,7 @@ class RateBook
         $this->db->query('SELECT book_id FROM rating WHERE username = :username OR username = :email GROUP BY book_id');
         $this->db->bind(':username', $username);
         $this->db->bind(':username', $email);
-        $userRB = $this->db->resultSetASS();
+        $userRB = $this->db->resultSet();
         if ($userRB) {
             return $userRB;
         } else {
@@ -31,7 +32,7 @@ class RateBook
         LEFT JOIN rating as r 
         ON tb.id = r.book_id 
         GROUP BY tb.id');
-        $results = $this->db->resultSetASS();
+        $results = $this->db->resultSet();
         if ($results) {
             return $results;
         } else {
@@ -39,12 +40,12 @@ class RateBook
         }
     }
 
-    public function setBookValue($book_id, $rating, $username)
+    public function setBookValue($data)
     {
-        $this->db->query('INSERT INTO rating(book_id, rating_number, username) values (:book_id, :rating, :username)');
-        $this->db->bind(':book_id', $book_id);
-        $this->db->bind(':rating', $rating);
-        $this->db->bind(':username', $username);
+        $this->db->query('INSERT INTO rating (book_id, rating_number, username) VALUES (:id, :rating, :username)');
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':rating', $data['rating']);
+        $this->db->bind(':username', $data['username']);
         if ($this->db->execute()) {
             return true;
         } else {

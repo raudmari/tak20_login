@@ -10,11 +10,11 @@ include_once 'helpers/session_helper.php';
                 <form method="post" action="./controllers/Users.php">
                     <input type="hidden" name="type" value="login">
                     <input class="input mb-2" type="text" name="name/email" placeholder="Kasutajanimi/Email...">
-                    <input class="input mb-2" type="password" name="usersPwd" placeholder="Salasõna...">
-                    <button class="button is-light mb-2" type="submit" name="submit">Log In</button>
+                    <input class="input mb-2" type="password" name="usersPwd" placeholder="Parool...">
+                    <button class="button is-light mb-2" type="submit" name="submit">Logi sisse</button>
                 </form>
                 <div>
-                    <a href="./reset-password">Unustasid salasõna?</a>
+                    <a href="./reset-password">Unustasid parooli?</a>
                 </div>
             </div>
         </div>

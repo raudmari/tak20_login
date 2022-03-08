@@ -9,19 +9,22 @@ RewriteEngine On
 RewriteBase /tak20_login_edit/
  
 # Fail mis käitub teisiti ja ei lähe läbi index.php
-RewriteCond %{REQUEST_URI} "../controllers/AllowRewriting.php"
+RewriteCond %{REQUEST_URI} "./controllers/AllowRewriting.php"
 RewriteRule (.*) $1 [L]
 
-RewriteCond %{REQUEST_URI} "../controllers/RateBooks.php"
+RewriteCond %{REQUEST_URI} "./controllers/RateBooks.php"
 RewriteRule (.*) $1 [L]
 
-RewriteCond %{REQUEST_URI} "setBookValue.php"
-RewriteRule (.*) $1 [L] 
-
-RewriteCond %{REQUEST_URI} "setMouthValue.php"
-RewriteRule (.*) $1 [L] 
+RewriteCond %{REQUEST_URI} "./controllers/RateChildMouths.php"
+RewriteRule (.*) $1 [L]
 
 RewriteCond %{REQUEST_URI} "../Users.php"
+RewriteRule (.*) $1 [L] 
+
+RewriteCond %{REQUEST_URI} "../ResetPasswords.php"
+RewriteRule (.*) $1 [L] 
+
+RewriteCond %{REQUEST_URI} "../create-new-password.php"
 RewriteRule (.*) $1 [L] 
 
 # Kaust, mis käitub teisiti

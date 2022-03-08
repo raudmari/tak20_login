@@ -1,8 +1,8 @@
 <?php
 
-require_once '/home/marionraudsepp/public_html/tak20_login_edit/models/AllowRewrite.php';
-require_once '/home/marionraudsepp/public_html/tak20_login_edit/helpers/session_helper.php';
-require_once '/home/marionraudsepp/public_html/tak20_login_edit/config/common.php';
+require_once 'models/AllowRewrite.php';
+require_once 'helpers/session_helper.php';
+require_once 'config/common.php';
 
 
 class AllowRewriting
@@ -18,7 +18,7 @@ class AllowRewriting
     function isRewriteAllowed()
     {
         $row = $this->rewriteModel->rewriteAllowed();
-        define('ALLOW_REWRITE', $row['allow']);
+        define('ALLOW_REWRITE', $row->allow);
         if (ALLOW_REWRITE) {
             return true;
         } else {

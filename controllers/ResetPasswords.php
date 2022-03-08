@@ -2,13 +2,13 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-require_once 'models/ResetPassword.php';
-require_once 'helpers/session_helper.php';
-require_once 'models/User.php';
+require '../models/ResetPassword.php';
+require '../helpers/session_helper.php';
+require '../models/User.php';
 //Require PHP Mailer
-require_once 'PHPMailer/src/PHPMailer.php';
-require_once 'PHPMailer/src/Exception.php';
-require_once 'PHPMailer/src/SMTP.php';
+require '../PHPMailer/src/PHPMailer.php';
+require '../PHPMailer/src/Exception.php';
+require '../PHPMailer/src/SMTP.php';
 
 class ResetPasswords
 {
@@ -26,7 +26,7 @@ class ResetPasswords
         $this->mail->SMTPDebug = 1;
         $this->mail->SMTPAuth = true;
         $this->mail->SMTPSecure = 'tls';
-        $this->mail->Host = '';
+        $this->mail->Host = ';
         $this->mail->Port = 587;
         $this->mail->Username = '';
         $this->mail->Password = '';
@@ -35,8 +35,8 @@ class ResetPasswords
     public function sendEmail()
     {
         //Sanitize POST data
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        $usersEmail = trim($_POST['usersEmail']);
+        $_POST = filter_input_array(INPUT_POST);
+        $usersEmail = htmlspecialchars(trim($_POST['usersEmail']));
 
         if (empty($usersEmail)) {
             flash("reset", "Palun lisa e-posti aadress");
@@ -68,7 +68,7 @@ class ResetPasswords
         $message .= "<p>Here is your password reset link: </p>";
         $message .= "<a href='" . $url . "'>" . $url . "</a>";
 
-        $this->mail->setFrom('', 'Login_Edit_Admin');
+        $this->mail->setFrom('raudmari@gamil.com', 'Login_Edit_Admin');
         $this->mail->isHTML(true);
         $this->mail->Subject = $subject;
         $this->mail->Body = $message;
@@ -76,64 +76,64 @@ class ResetPasswords
 
         $this->mail->send();
 
-        flash("reset", "Check your email", 'form-message form-message-green');
+        flash("reset", "Vaata oma e-posti", 'box has-background-success-light has-text-success');
         redirect("../reset-password");
     }
 
     public function resetPassword()
     {
         //Sanitize POST data
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $_POST = filter_input_array(INPUT_POST);
         $data = [
-            'selector' => trim($_POST['selector']),
-            'validator' => trim($_POST['validator']),
-            'pwd' => trim($_POST['pwd']),
-            'pwd-repeat' => trim($_POST['pwd-repeat'])
+            'selector' => htmlspecialchars(trim($_POST['selector'])),
+            'validator' => htmlspecialchars(trim($_POST['validator'])),
+            'pwd' => htmlspecialchars(trim($_POST['pwd'])),
+            'pwd-repeat' => htmlspecialchars(trim($_POST['pwd-repeat']))
         ];
         $url = '../create-new-password.php?selector=' . $data['selector'] . '&validator=' . $data['validator'];
 
         if (empty($_POST['pwd'] || $_POST['pwd-repeat'])) {
-            flash("newReset", "Please fill out all fields");
+            flash("newReset", "Palun täida kõik väljad");
             redirect($url);
         } else if ($data['pwd'] != $data['pwd-repeat']) {
-            flash("newReset", "Passwords do not match");
+            flash("newReset", "Paroolid on erinevad");
             redirect($url);
         } else if (strlen($data['pwd']) < 6) {
-            flash("newReset", "Invalid password");
+            flash("newReset", "Vale parool");
             redirect($url);
         }
 
         $currentDate = date("U");
         if (!$row = $this->resetModel->resetPassword($data['selector'], $currentDate)) {
-            flash("newReset", "Sorry. The link is no longer valid");
+            flash("newReset", "Kahjuks pole antud link enam aktiivne!");
             redirect($url);
         }
 
         $tokenBin = hex2bin($data['validator']);
         $tokenCheck = password_verify($tokenBin, $row->pwdResetToken);
         if (!$tokenCheck) {
-            flash("newReset", "You need to re-Submit your reset request");
+            flash("newReset", "Palun saada oma päring uuesti!");
             redirect($url);
         }
 
         $tokenEmail = $row->pwdResetEmail;
         if (!$this->userModel->findUserByEmailOrUsername($tokenEmail, $tokenEmail)) {
-            flash("newReset", "There was an error");
+            flash("newReset", "Tekkis viga");
             redirect($url);
         }
 
         $newPwdHash = password_hash($data['pwd'], PASSWORD_DEFAULT);
         if (!$this->userModel->resetPassword($newPwdHash, $tokenEmail)) {
-            flash("newReset", "There was an error");
+            flash("newReset", "Tekkis viga");
             redirect($url);
         }
 
         if (!$this->resetModel->deleteEmail($tokenEmail)) {
-            flash("newReset", "There was an error");
+            flash("newReset", "Tekkis viga");
             redirect($url);
         }
 
-        flash("newReset", "Password Updated", 'form-message form-message-green');
+        flash("newReset", "Parool uuendatud", 'box has-background-success-light has-text-success');
         redirect($url);
     }
 }

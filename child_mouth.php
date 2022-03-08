@@ -1,6 +1,12 @@
 <?php
 require_once 'controllers/RateChildMouths.php';
+require_once 'controllers/AllowRewriting.php';
 
+if (isset($_SESSION['usersUid'])) {
+    $username = $_SESSION['usersUid'];
+} elseif (isset($_SESSION['usersEmail'])) {
+    $username = $_SESSION['usersEmail'];
+}
 ?>
 
 <div class="columns m-1">
@@ -17,29 +23,27 @@ require_once 'controllers/RateChildMouths.php';
             <cmody>
                 <?php foreach ($results as $key => $val) : ?>
                 <tr>
-                    <td class=""><?= $val['child_text']; ?></td>
+                    <td class=""><?= $val->child_text; ?></td>
                     <td class="has-text-centered">
-                        <div class="my-rating" id='<?= $val['id'] ?>'></div>
-
-
+                        <div class="my-rating" id='<?= $val->id ?>'></div>
                         <script>
                         $('.my-rating').starRating({
-                            starSize: 25,
-                            disableAfterRate: !settings_result,
-                            readOnly: found,
-                            initialRating: <?= $val['rate']; ?>,
+                            starSize: 20,
+                            //disableAfterRate: !settings_result,
+                            //readOnly: found,
+                            initialRating: <?= $val->rate; ?>,
                             callback: function(currentRating, $el) {
-                                let rate = currentRating; // Mitu tärni valiti
-                                let ip_add = '<?= $ip_add ?>';
-                                let id = $el[0].id; // my-rating id=
-                                console.log(rate, ip_add, id); // Testiks
+                                let id = $el[0].id;
+                                let rate = currentRating;
+                                let username = '<?= $username ?>';
+                                console.log(rate, username, id); // Testiks
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'setMouthValue.php',
+                                    url: 'controllers/RateChildMouths.php',
                                     data: {
-                                        cm_id: id,
-                                        rating_number: rate,
-                                        ip_add: ip_add
+                                        id: id,
+                                        rating: rate,
+                                        username: username
 
                                     },
                                     success: function(data) {
@@ -49,7 +53,6 @@ require_once 'controllers/RateChildMouths.php';
                                     error: function(data) {
                                         console.log('Rating error')
                                     }
-
                                 });
                             }
                         })

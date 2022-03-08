@@ -1,5 +1,6 @@
 <?php
-require_once '../libraries/Database.php';
+define('ROOT', dirname(dirname(__FILE__)));
+require_once(ROOT . '/libraries/Database.php');
 
 class ResetPassword
 {

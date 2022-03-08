@@ -1,6 +1,6 @@
 <?php
-require_once '../models/User.php';
-require_once '../helpers/session_helper.php';
+require '../models/User.php';
+require '../helpers/session_helper.php';
 
 class Users
 {
@@ -38,20 +38,20 @@ class Users
         }
 
         if (!preg_match("/^[a-zA-Z0-9]*$/", $data['usersUid'])) {
-            flash("register", "Vale kasutajanimi");
+            flash("register", "kasutajanimi ei tohi sisaldada tähemärkidest ja numbritest erinevaid sümboleid!");
             redirect("../signup");
         }
 
         if (!filter_var($data['usersEmail'], FILTER_VALIDATE_EMAIL)) {
-            flash("register", "Vale e-posti aadress");
+            flash("register", "e-posti aadress ei ole korrektne");
             redirect("../signup");
         }
 
         if (strlen($data['usersPwd']) < 6) {
-            flash("register", "Vale salasõna");
+            flash("register", "Parool liiga lühike");
             redirect("../signup.php");
         } else if ($data['usersPwd'] !== $data['pwdRepeat']) {
-            flash("register", "Salasõna ei klapi");
+            flash("register", "Paroolid ei klapi");
             redirect("../signup");
         }
 
@@ -69,7 +69,7 @@ class Users
         if ($this->userModel->register($data)) {
             redirect("../login");
         } else {
-            die("Ilmnes viga");
+            die("Tekkis viga");
         }
     }
 

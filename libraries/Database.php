@@ -1,5 +1,6 @@
 <?php
-require_once '/home/marionraudsepp/public_html/tak20_login_edit/config/config.php';
+define('ROOT', dirname(dirname(__FILE__)));
+require_once(ROOT . '/config/config.php');
 /*
     * PDO Database Class
     * Connect to database
@@ -78,11 +79,6 @@ class Database
         return $this->stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function resultSetASS()
-    {
-        $this->execute();
-        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
     //Return a single record
     public function single()
@@ -95,11 +91,5 @@ class Database
     public function rowCount()
     {
         return $this->stmt->rowCount();
-    }
-
-    public function singleone()
-    {
-        $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

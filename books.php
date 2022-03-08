@@ -1,8 +1,9 @@
 <?php
-require_once 'controllers/RateBooks.php';
+include_once 'controllers/RateBooks.php';
+include_once 'controllers/AllowRewriting.php';
 
-if (isset($_SESSION['usersName'])) {
-    $username = $_SESSION['usersName'];
+if (isset($_SESSION['usersUid'])) {
+    $username = $_SESSION['usersUid'];
 } elseif (isset($_SESSION['usersEmail'])) {
     $username = $_SESSION['usersEmail'];
 }
@@ -27,28 +28,50 @@ if (isset($_SESSION['usersName'])) {
                 <?php foreach ($results as $key => $val) : ?>
                 <tr>
                     <td class="has-text-right"><?= ($key + 1); ?>.</td>
-                    <td><?= $val['book_name']; ?></td>
-                    <td><?= $val['book_author']; ?></td>
+                    <td><?= $val->book_name; ?></td>
+                    <td><?= $val->book_author; ?></td>
                     <td class="has-text-centered">
-                        <div class="my-rating" id='<?= $val['id'] ?>'></div>
+                        <div class="my-rating" id='<?= $val->id ?>'></div>
+                        <?php if (!isset($_SESSION['usersId'])) : ?>
+                        <!-- kui sessiooni pole, kui kasutaja pole sisse loginud, siis näeb hinnanguid, hinnata ei saa-->
+                        <?php
+                                $found = false;
+                                ?>
+                        <?php else : ?>
+                        <!-- kui sessiooni on, kasutaja on sisse loginud, siis näeb hinnanguid ja saab ka hinnata-->
+                        <?php
+                                $found = false;
+                                foreach ($usresRB as $k => $v) {
+                                    if ($val->id == $v->book_id) { // kui found on tõene siis raamatut on sisselogitud kasutaja poolt juba kord hinnatud.
+                                        $found = true;
+                                    }
+                                }
+                                ?>
+                        <?php endif; ?>
 
                         <script>
+                        settings_result =
+                            <?= json_encode($allow); ?>; // settings_result javascripti jaoks loetavaks muudetud
+                        found = <?= json_encode($found); ?>;
+                        if (settings_result) {
+                            found = false;
+                        }
                         $('.my-rating').starRating({
-                            starSize: 25,
-                            //disableAfterRate: !settings_result,
-                            //readOnly: found,
-                            initialRating: <?= $val['rate']; ?>, // näitab esialgset väärtust, mis hinnanguna antud
+                            starSize: 20,
+                            disableAfterRate: !settings_result,
+                            readOnly: found,
+                            initialRating: <?= $val->rate; ?>, // näitab esialgset väärtust, mis hinnanguna antud
                             callback: function(currentRating, $el) {
-                                let rate = currentRating; // Mitu tärni valiti
+                                let id = $el[0].id;
+                                let rate = currentRating;
                                 let username = '<?= $username ?>';
-                                let id = $el[0].id; // my-rating id=
-                                console.log(rate, username, id); // Testiks
+                                console.log(id, rate, username);
                                 $.ajax({
                                     type: 'POST',
-                                    url: '<?= $setBooksValues; ?>',
+                                    url: 'controllers/RateBooks.php',
                                     data: {
-                                        book_id: id,
-                                        rating_number: rate,
+                                        id: id,
+                                        rating: rate,
                                         username: username
                                     },
                                     success: function(data) {
@@ -56,10 +79,9 @@ if (isset($_SESSION['usersName'])) {
                                         location.reload(true);
                                     },
                                     error: function(data) {
-                                        console.log('Rating error')
+                                        console.log('Rating error');
                                     }
-
-                                });
+                                })
                             }
                         })
                         </script>
